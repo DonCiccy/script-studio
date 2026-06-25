@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<!--
+  Script Studio — MultiBase / Feliks
+  Apri nel browser. Richiede solo connessione internet per le chiamate API.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Script Studio — MultiBase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600..900&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#09090b;color:#f4f4f5;font-family:Inter,system-ui,sans-serif;font-size:15px;line-height:1.5}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea{font-family:inherit;font-size:13px}
+textarea{resize:vertical}
+details>summary{list-style:none;cursor:pointer}
+details>summary::-webkit-details-marker{display:none}
+button:focus-visible,summary:focus-visible{outline:2px solid #f59e0b;outline-offset:2px;border-radius:4px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin 1s linear infinite}
+/* fonts */
+.ff{font-family:Fraunces,Georgia,serif}
+.fm{font-family:'IBM Plex Mono',Menlo,monospace}
+/* page */
+.page{min-height:100vh;background:#09090b}
+.wrap{max-width:780px;margin:0 auto;padding:48px 24px}
+/* text */
+.h1{font-size:clamp(32px,5vw,48px);font-weight:700;letter-spacing:-.02em;color:#f4f4f5}
+.h2{font-size:18px;font-weight:600;color:#f4f4f5}
+.sm{font-size:13px}
+.xs{font-size:11px}
+.caps{text-transform:uppercase;letter-spacing:.08em}
+.dim{color:#a1a1aa}
+.muted{color:#71717a}
+.c-amber{color:#f59e0b}
+.c-teal{color:#2dd4bf}
+.c-rose{color:#fb7185}
+.c-inv{color:#09090b}
+.semi{font-weight:600}
+.bold{font-weight:700}
+.prewrap{white-space:pre-wrap}
+.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lh-snug{line-height:1.35}
+.lh-loose{line-height:1.7}
+/* layout */
+.flex{display:flex}
+.col{flex-direction:column}
+.wrap-{flex-wrap:wrap}
+.items-c{align-items:center}
+.items-s{align-items:flex-start}
+.just-c{justify-content:center}
+.just-b{justify-content:space-between}
+.just-e{justify-content:flex-end}
+.g1{gap:4px}.g2{gap:8px}.g3{gap:12px}.g4{gap:16px}.g6{gap:24px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.f1{flex:1}
+.min0{min-width:0}
+.shrink0{flex-shrink:0}
+.wfull{width:100%}
+.hpx{height:1px}
+.w28h28{width:28px;height:28px}
+.w32h32{width:32px;height:32px}
+.mx-auto{margin:0 auto}
+.max-md{max-width:480px}
+.max-2xl{max-width:660px}
+/* spacing */
+.mb1{margin-bottom:4px}.mb2{margin-bottom:8px}.mb3{margin-bottom:12px}
+.mb4{margin-bottom:16px}.mb5{margin-bottom:20px}.mb6{margin-bottom:24px}.mb8{margin-bottom:32px}
+.mt2{margin-top:8px}.mt3{margin-top:12px}
+.mx2{margin-left:8px;margin-right:8px}
+.p3{padding:12px}.p4{padding:16px}.p8{padding:32px}
+.px2{padding-left:8px;padding-right:8px}
+.px3{padding-left:12px;padding-right:12px}
+.px4{padding-left:16px;padding-right:16px}
+.px5{padding-left:20px;padding-right:20px}
+.px6{padding-left:24px;padding-right:24px}
+.py1{padding-top:4px;padding-bottom:4px}
+.py2{padding-top:8px;padding-bottom:8px}
+.py3{padding-top:12px;padding-bottom:12px}
+.py4{padding-top:16px;padding-bottom:16px}
+.py6{padding-top:24px;padding-bottom:24px}
+.space4>*+*{margin-top:16px}
+.space5>*+*{margin-top:20px}
+.space8>*+*{margin-top:32px}
+.space10>*+*{margin-top:40px}
+/* borders */
+.border{border:1px solid #27272a}
+.border-t{border-top:1px solid #27272a}
+.border-b{border-bottom:1px solid #27272a}
+.border-dash{border:1px dashed #27272a}
+.border-amber{border-color:#f59e0b!important}
+.r{border-radius:6px}.rlg{border-radius:8px}.rfull{border-radius:9999px}
+.overflow-h{overflow:hidden}
+/* backgrounds */
+.bg-base{background:#09090b}
+.bg-s{background:#18181b}
+.bg-amber{background:#f59e0b}
+.bg-amber-dk{background:#1c1407}
+.bg-zinc{background:#f4f4f5}
+/* transitions */
+.t{transition:color .15s,background .15s,border-color .15s}
+.sel-none{user-select:none}
+/* ── NAV ── */
+.nav{display:flex;gap:4px;border-bottom:1px solid #27272a;margin-bottom:32px}
+.ntab{display:flex;align-items:center;gap:6px;padding:10px 16px;font-size:12px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.08em;border-bottom:2px solid transparent;color:#71717a;transition:color .15s,border-color .15s}
+.ntab:hover{color:#d4d4d8}
+.ntab.on{border-bottom-color:#f59e0b;color:#f4f4f5}
+/* ── SECTION HEAD ── */
+.sh{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.sh span{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#a1a1aa;white-space:nowrap}
+.sh .rule{flex:1;height:1px;background:#27272a}
+/* ── PLATFORM BUTTONS ── */
+.plat-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 12px;border:1px solid #27272a;border-radius:8px;background:#18181b;color:#71717a;transition:border-color .15s,color .15s,background .15s}
+.plat-btn:hover{border-color:#3f3f46;color:#d4d4d8}
+.plat-btn.on{border-color:#f59e0b;background:#1c1407;color:#fbbf24}
+.plat-btn span{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+/* ── OBJECTIVE BUTTONS ── */
+.obj-btn{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:12px 16px;border:1px solid #27272a;border-radius:8px;background:#18181b;text-align:left;transition:border-color .15s,background .15s}
+.obj-btn:hover{border-color:#3f3f46}
+.obj-btn.on{border-color:#f59e0b;background:#1c1407}
+.obj-label{font-size:13px;font-weight:500;color:#d4d4d8}
+.obj-btn.on .obj-label{color:#fbbf24}
+.obj-desc{font-size:11px;color:#71717a;line-height:1.35}
+/* ── IDEA CARDS ── */
+.idea-card{padding:14px;border:1px solid #27272a;border-radius:8px;background:#18181b;cursor:pointer;transition:border-color .15s,background .15s}
+.idea-card:hover{border-color:#3f3f46}
+.idea-card.on{border-color:#f59e0b;background:#1c1407}
+.idea-title{font-size:13px;font-weight:500;margin-bottom:8px;line-height:1.35;color:#f4f4f5}
+.idea-card.on .idea-title{color:#fbbf24}
+.badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.badge{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;padding:2px 8px;border-radius:3px;background:#27272a}
+.ba{color:#f59e0b}.bt{color:#2dd4bf}
+.idea-angle{font-size:11px;color:#71717a;line-height:1.35;margin-bottom:12px}
+.ia-row{display:flex;align-items:center;justify-content:space-between}
+.ia-use{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;color:#71717a}
+.idea-card.on .ia-use{color:#f59e0b}
+.ia-save{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;color:#52525b;transition:color .15s}
+.ia-save:hover{color:#a1a1aa}
+.ia-save.saved{color:#f59e0b}
+/* ── CHIPS ── */
+.chip{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:4px 10px;border-radius:9999px;border:1px solid #3f3f46;color:#d4d4d8;transition:all .15s}
+.chip:hover{border-color:#f59e0b;color:#fbbf24}
+.chip.on{border-color:#f59e0b;color:#fbbf24;background:#1c1407}
+.chip-add{border-style:dashed;border-color:#3f3f46;color:#71717a}
+.chip-add:hover{border-color:#71717a;color:#a1a1aa}
+/* ── BUTTONS ── */
+.btn-p{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:6px;background:#f59e0b;color:#09090b;font-weight:600;font-size:14px;transition:background .15s}
+.btn-p:hover{background:#fbbf24}
+.btn-p:disabled{background:#27272a;color:#52525b;cursor:not-allowed}
+.btn-o{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border:1px solid #3f3f46;border-radius:6px;background:#18181b;color:#d4d4d8;font-size:13px;font-weight:500;transition:all .15s}
+.btn-o:hover{background:#27272a;border-color:#52525b}
+.btn-o:disabled{opacity:.5;cursor:not-allowed}
+.btn-g{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#71717a;transition:color .15s}
+.btn-g:hover{color:#f59e0b}
+.btn-g:disabled{color:#3f3f46}
+.btn-sv{border-radius:6px;background:#f4f4f5;color:#09090b;font-weight:600;font-size:13px;padding:10px 20px;transition:background .15s}
+.btn-sv:hover{background:#fff}
+.btn-sq{display:flex;align-items:center;justify-content:center;border:1px solid #3f3f46;border-radius:6px;color:#a1a1aa;transition:all .15s}
+.btn-sq:hover{border-color:#71717a;color:#f4f4f5}
+.btn-sq:disabled{color:#3f3f46;border-color:#27272a}
+.btn-rnd{font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;border:1px solid #3f3f46;border-radius:6px;color:#a1a1aa;transition:all .15s}
+.btn-rnd:hover{border-color:#71717a;color:#d4d4d8}
+.btn-rnd.on{background:#f4f4f5;border-color:#f4f4f5;color:#09090b}
+.btn-del{color:#52525b;transition:color .15s;padding:2px}
+.btn-del:hover{color:#fb7185}
+.btn-cp{display:inline-flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;color:#71717a;transition:color .15s}
+.btn-cp:hover{color:#f4f4f5}
+/* ── INPUTS ── */
+.inp,.ta{width:100%;border:1px solid #27272a;border-radius:6px;background:#18181b;color:#f4f4f5;font-size:13px;padding:10px 12px;outline:none;transition:border-color .15s}
+.inp::placeholder,.ta::placeholder{color:#52525b}
+.inp:focus,.ta:focus{border-color:#f59e0b}
+.ta{line-height:1.5}
+.qa-inp{border:1px solid #f59e0b;border-radius:6px;background:#18181b;color:#f4f4f5;font-size:13px;padding:6px 12px;outline:none;flex:1}
+/* ── CARD ── */
+.card{border:1px solid #27272a;border-radius:8px;background:#18181b;overflow:hidden}
+.card-h{padding:8px 16px;border-bottom:1px solid #27272a;background:#09090b}
+.card-b{padding:20px}
+.card-f{padding:12px 16px;border-top:1px solid #27272a}
+.vl{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#f59e0b}
+/* ── KB ITEMS ── */
+.kbi{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid #27272a;border-radius:6px;background:#18181b}
+.kbi-label{font-size:13px;color:#d4d4d8}
+.kbi-sub{font-size:11px;color:#71717a;margin-top:2px}
+/* ── EMPTY ── */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px 16px;border:1px dashed #27272a;border-radius:8px}
+/* ── UPLOAD ── */
+.upload{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:24px 16px;border:1px dashed #3f3f46;border-radius:6px;background:#18181b;cursor:pointer;transition:border-color .15s;text-align:center}
+.upload:hover{border-color:#71717a}
+/* ── SETUP ── */
+.setup-page{min-height:100vh;background:#09090b;display:flex;align-items:center;justify-content:center;padding:32px}
+.setup-box{max-width:440px;width:100%}
+.sdot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;transition:all .15s}
+.sdot.done{background:#f59e0b;color:#09090b}
+.sdot.todo{background:#27272a;color:#52525b}
+.sline{flex:1;height:1px;margin:0 8px;transition:background .15s}
+.sline.done{background:#f59e0b}
+.sline.todo{background:#27272a}
+.code-tag{font-family:'IBM Plex Mono',monospace;font-size:11px;background:#27272a;padding:2px 6px;border-radius:3px;color:#f59e0b}
+/* ── LINK ── */
+.link{color:#f59e0b;transition:color .15s}
+.link:hover{color:#fbbf24}
+/* responsive */
+@media(max-width:560px){
+  .grid4{grid-template-columns:1fr 1fr}
+  .grid2{grid-template-columns:1fr}
+  .wrap{padding:32px 16px}
+  .btn-p{width:100%}
+}
+</style>
+<style>
+/* ── SETTINGS OVERLAY ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;display:flex;align-items:center;justify-content:center;padding:24px}
+.settings-box{background:#18181b;border:1px solid #27272a;border-radius:12px;width:100%;max-width:520px;max-height:85vh;overflow-y:auto}
+.settings-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #27272a}
+.settings-body{padding:20px}
+/* provider tabs */
+.prov-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:20px}
+.prov-tab{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 8px;border:1px solid #27272a;border-radius:8px;background:#09090b;transition:all .15s;cursor:pointer}
+.prov-tab:hover{border-color:#3f3f46}
+.prov-tab.on{border-color:#f59e0b;background:#1c1407}
+.prov-tab .pt-name{font-size:12px;font-weight:600;color:#d4d4d8}
+.prov-tab.on .pt-name{color:#fbbf24}
+.prov-tab .pt-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;padding:2px 6px;border-radius:3px}
+.badge-free{background:#14532d;color:#4ade80}
+.badge-paid{background:#1c1407;color:#f59e0b}
+/* model selection */
+.model-btn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border:1px solid #27272a;border-radius:6px;background:#09090b;margin-bottom:6px;transition:all .15s;cursor:pointer}
+.model-btn:hover{border-color:#3f3f46}
+.model-btn.on{border-color:#f59e0b;background:#1c1407}
+.model-btn .mb-name{font-size:13px;font-weight:500;color:#d4d4d8}
+.model-btn.on .mb-name{color:#fbbf24}
+.model-btn .mb-note{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#71717a}
+/* header model indicator */
+.model-indicator{display:flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid #27272a;border-radius:6px;font-size:11px;font-family:'IBM Plex Mono',monospace;color:#a1a1aa;cursor:pointer;transition:all .15s}
+.model-indicator:hover{border-color:#3f3f46;color:#d4d4d8}
+.mi-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.mi-dot.gemini{background:#4285f4}
+.mi-dot.anthropic{background:#d97706}
+.mi-dot.openai{background:#10a37f}
+</style>
+<style>
+/* ── TELEPROMPTER ── */
+.tp-overlay{position:fixed;inset:0;background:#000;z-index:300;overflow-y:auto;cursor:pointer}
+.tp-content{max-width:800px;margin:0 auto;padding:80px 40px 140px;cursor:default}
+.tp-text{font-size:clamp(22px,3vw,40px);line-height:1.9;color:#f0f0f0;white-space:pre-wrap;letter-spacing:.01em;text-align:center}
+.tp-close{position:fixed;top:20px;right:24px;font-family:'IBM Plex Mono',monospace;font-size:12px;text-transform:uppercase;color:#52525b;cursor:pointer;z-index:301;background:none;border:none;transition:color .15s}
+.tp-close:hover{color:#a1a1aa}
+.tp-info{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3f3f46;pointer-events:none}
+/* suggested duration chip */
+.chip-sug{border-color:#f59e0b!important;color:#f59e0b!important}
+</style>
+<style>
+/* ── SCRIPT SECTIONS ── */
+.script-sec{margin-bottom:16px}
+.script-sec:last-child{margin-bottom:0}
+.sec-lbl{color:#f59e0b;margin-bottom:6px;letter-spacing:.12em}
+.script-ta{width:100%;background:transparent;border:none;border-bottom:1px solid #27272a;border-radius:0;color:#f4f4f5;font-size:13px;padding:6px 0;line-height:1.7;resize:none;outline:none;transition:border-color .15s}
+.script-ta:focus{border-bottom-color:#f59e0b}
+</style>
+<style>
+/* ── TELEPROMPTER CTA ── */
+.tp-cta{text-align:center;padding:20px 16px;border:1px dashed #3f3f46;border-radius:8px;background:#09090b}
+.tp-cta .btn-p{display:inline-flex}
+</style>
+<style>
+/* ── TELEPROMPTER v2 ── */
+.tp-overlay{position:fixed;inset:0;background:#000;z-index:300;overflow-y:auto;cursor:pointer}
+.tp-content{max-width:820px;margin:0 auto;padding:80px 40px 0;cursor:default}
+.tp-text{font-size:clamp(22px,3vw,42px);line-height:1.9;color:#f0f0f0;white-space:pre-wrap;letter-spacing:.01em;text-align:center}
+.tp-bar{position:fixed;bottom:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);z-index:302}
+.tp-btn{font-family:'IBM Plex Mono',monospace;font-size:14px;color:#a1a1aa;background:none;border:1px solid #3f3f46;border-radius:6px;padding:7px 14px;cursor:pointer;transition:color .15s,border-color .15s}
+.tp-btn:hover{color:#f4f4f5;border-color:#71717a}
+.tp-play{width:44px;height:44px;padding:0;font-size:18px;border-color:#f59e0b;color:#f59e0b}
+.tp-play:hover{background:#1c1407}
+.tp-spd{font-family:'IBM Plex Mono',monospace;font-size:14px;color:#f59e0b;letter-spacing:2px;min-width:64px;text-align:center}
+.tp-hint{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'IBM Plex Mono',monospace;font-size:13px;color:#52525b;pointer-events:none;transition:opacity .3s;white-space:nowrap;text-align:center}
+.tp-info{position:fixed;top:16px;left:50%;transform:translateX(-50%);font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3f3f46;pointer-events:none}
+</style>
+</head><body><div id="app"></div><script>
+// ── PROVIDERS ────────────────────────────────────────────
+const PROVIDERS = {
+  gemini:{
+    name:'Google Gemini', badge:'Free', badgeClass:'badge-free', dotClass:'gemini',
+    models:[
+      {id:'gemini-3.1-flash-lite', name:'Gemini 3.1 Flash-Lite', note:'Free · 1000/day · gen 3 Pro base'},
+      {id:'gemini-2.5-flash',      name:'Gemini 2.5 Flash',      note:'Free · 1500/day'},
+    ],
+    keyHint:'AIzaSy…', keyCheck:k=>k.length>=20,
+    docsUrl:'https://aistudio.google.com/app/apikey',
+    steps:['Go to aistudio.google.com/app/apikey','Click "Create API key" → select a project','Copy the key'],
+  },
+  anthropic:{
+    name:'Anthropic Claude', badge:'~€1/mo', badgeClass:'badge-paid', dotClass:'anthropic',
+    models:[
+      {id:'claude-sonnet-4-6',           name:'Claude Sonnet 4.6', note:'Best quality'},
+      {id:'claude-haiku-4-5-20251001',   name:'Claude Haiku',      note:'Fast · cheap'},
+    ],
+    keyHint:'sk-ant-…', keyCheck:k=>k.startsWith('sk-ant-')&&k.length>20,
+    docsUrl:'https://console.anthropic.com/settings/keys',
+    steps:['Go to console.anthropic.com/settings/keys','Click "Create Key"','Copy the key (starts with sk-ant-)'],
+  },
+  openai:{
+    name:'OpenAI', badge:'~€1-2/mo', badgeClass:'badge-paid', dotClass:'openai',
+    models:[
+      {id:'gpt-4o',      name:'GPT-4o',      note:'Great quality'},
+      {id:'gpt-4o-mini', name:'GPT-4o mini', note:'Fast · cheap'},
+    ],
+    keyHint:'sk-…', keyCheck:k=>k.startsWith('sk-')&&!k.startsWith('sk-ant-')&&k.length>20,
+    docsUrl:'https://platform.openai.com/api-keys',
+    steps:['Go to platform.openai.com/api-keys','Click "Create new secret key"','Copy the key'],
+  },
+};
+const PROV_IDS = ['gemini','anthropic','openai'];
+// ── DURATIONS ─────────────────────────────────────────────
+// Each entry: [{v:seconds, l:label, s:suggested}]
+const DUR = {
+  pov:    [{v:45,l:'45s'},{v:60,l:'60s',s:1},{v:90,l:'90s',s:1},{v:120,l:'2min'}],
+  bts:    [{v:45,l:'45s'},{v:60,l:'60s',s:1},{v:90,l:'90s',s:1},{v:120,l:'2min'}],
+  case:   [{v:45,l:'45s'},{v:60,l:'60s',s:1},{v:90,l:'90s',s:1},{v:120,l:'2min'}],
+  cta_li: [{v:30,l:'30s'},{v:45,l:'45s',s:1},{v:60,l:'60s',s:1},{v:90,l:'90s'}],
+  scroll:    [{v:10,l:'10s'},{v:15,l:'15s',s:1},{v:20,l:'20s',s:1},{v:30,l:'30s'}],
+  agitation: [{v:15,l:'15s'},{v:20,l:'20s',s:1},{v:30,l:'30s',s:1},{v:45,l:'45s'}],
+  story:     [{v:20,l:'20s'},{v:30,l:'30s',s:1},{v:45,l:'45s',s:1},{v:60,l:'60s'}],
+  offer:     [{v:15,l:'15s'},{v:20,l:'20s',s:1},{v:30,l:'30s',s:1},{v:45,l:'45s'}],
+  hero:   [{v:45,l:'45s'},{v:60,l:'60s',s:1},{v:90,l:'90s',s:1},{v:120,l:'2min'}],
+  hiw:    [{v:45,l:'45s'},{v:60,l:'60s',s:1},{v:90,l:'90s',s:1},{v:120,l:'2min'}],
+  proof:  [{v:30,l:'30s'},{v:60,l:'60s',s:1},{v:90,l:'90s',s:1},{v:120,l:'2min'}],
+  close:  [{v:20,l:'20s'},{v:30,l:'30s',s:1},{v:45,l:'45s',s:1},{v:60,l:'60s'}],
+  intro:    [{v:120,l:'2min',s:1},{v:180,l:'3min',s:1},{v:300,l:'5min'}],
+  episode:  [{v:600,l:'10min'},{v:900,l:'15min',s:1},{v:1200,l:'20min',s:1},{v:1500,l:'25min'}],
+  hottake:  [{v:120,l:'2min'},{v:180,l:'3min',s:1},{v:300,l:'5min',s:1},{v:600,l:'10min'}],
+  keypoints:[{v:120,l:'2min',s:1},{v:180,l:'3min',s:1},{v:300,l:'5min'}],
+};
+function durOpts(objKey){return DUR[objKey]||[{v:60,l:'60s',s:1},{v:90,l:'90s'}];}
+function durDefault(objKey){const o=durOpts(objKey);return (o.find(x=>x.s)||o[0]).v;}
+function durLabel(secs){
+  if(secs<60)return secs+'s';
+  const m=Math.floor(secs/60),s=secs%60;
+  return m+'min'+(s?String(s)+'s':'');
+}
+function durWords(secs){return Math.round(secs/60*150);}
+
+
+// ── STORAGE ──────────────────────────────────────────────
+const LS={
+  get(k){try{return localStorage.getItem(k);}catch(e){return null;}},
+  set(k,v){try{localStorage.setItem(k,v);}catch(e){}},
+  json(k,d){try{const r=localStorage.getItem(k);return r?JSON.parse(r):d;}catch(e){return d;}}
+};
+const SK='feliks-v5', CK='feliks-conf';
+function persist(){LS.set(SK,JSON.stringify({kb:S.kb,ideas:S.ideas,hist:S.hist}));}
+function persistConf(){LS.set(CK,JSON.stringify({provider:S.provider,model:S.model,keys:S.keys}));}
+
+// ── CONSTANTS ────────────────────────────────────────────
+const LANGS=[{k:'it',l:'IT',f:'Italian'},{k:'en',l:'EN',f:'English'},{k:'de',l:'DE',f:'German'}];
+const DEFAULT_KB={
+  about:'',
+  brand:'',
+  proofPoints:[],pillars:[],styleExamples:[],documents:[]
+};
+const PL=[
+  {key:'linkedin',label:'LinkedIn',
+   tone:'MANDATORY TONE — first person singular, present tense. Short sentences, max 12-15 words. No generic openings. Banned: "innovative solution","value proposition","synergy".',
+   objectives:[
+    {key:'pov',  label:'Point of view',  desc:'Non-obvious take, zero direct promotion',  guide:'Open with a counter-intuitive statement. Develop in 2-3 logical steps. Close with an open question. ~60-90 seconds.'},
+    {key:'bts',  label:'Behind the scenes',desc:'Real process, mistakes, decisions',guide:'Open with a specific situation you experienced. Tell what happened, why, what you learned. ~60-90 seconds.'},
+    {key:'case', label:'Case study',     desc:'Real result with numbers and story',        guide:'Client situation → specific problem → how your product solved it → measurable result. Use numbers. ~60-90 seconds.'},
+    {key:'cta_li',label:'Conversion',   desc:'Direct CTA — demo, trial, signup',          guide:"Target's pain point → your product as direct answer → one proof point → clear CTA. ~45-60 seconds."},
+  ]},
+  {key:'meta',label:'Meta Ads',
+   tone:'MANDATORY TONE — ultra-short sentences, first three max 8-10 words each. Visual language. Zero introductions. Every word earned.',
+   objectives:[
+    {key:'scroll',    label:'Stop the scroll',  desc:'Pure hook, cold audience',              guide:'Counter-intuitive statement or uncomfortable number → connect to problem → your product. 15-25 sec.'},
+    {key:'agitation', label:'Problem agitation',desc:'For viewers who know the pain',         guide:'Repeat the problem with precise detail → make it worse → your product as the way out. 20-30 sec.'},
+    {key:'story',     label:'Story arc',         desc:'Mini-story built for full watch-through',guide:'Recognizable pain → complication → resolution with your product in last 10 seconds. 30-45 sec.'},
+    {key:'offer',     label:'Direct offer',      desc:'Benefit-first, objection, CTA',        guide:'Main benefit in one sentence → proof → handle main objection → CTA. 20-30 sec.'},
+  ]},
+  {key:'landing',label:'Landing Page',
+   tone:"MANDATORY TONE — product-focused but still in your voice. Logical structure: problem → solution → how → why believe → action.",
+   objectives:[
+    {key:'hero', label:'Hero video',    desc:"Confirm they're in the right place", guide:"Target's problem → your product as direct answer → what it does → reassurance → CTA. 60-90 sec."},
+    {key:'hiw',  label:'How it works', desc:'Product mechanics, reduces friction',guide:'3-4 steps from onboarding to result. Each step: what you do / what your product does / what you get. 60-90 sec.'},
+    {key:'proof',label:'Social proof', desc:'Numbers, cases, verifiable results', guide:'Strongest result → 1-2 cases → scale of the problem. Documented tone. 60-90 sec.'},
+    {key:'close',label:'Closing',      desc:'Final push before the page CTA',    guide:'What you personally get → remove last objection → clear CTA. 30-45 sec.'},
+  ]},
+  {key:'podcast',label:'Podcast',
+   tone:'MANDATORY TONE — pure spoken language. No written-sounding sentences. Like explaining to a smart colleague over coffee. Mark pauses with [pause].',
+   objectives:[
+    {key:'intro',    label:'Guest intro',  desc:'Who you are and why it matters',      guide:"Most interesting background → what he discovered → what he's building and why. 2-3 min."},
+    {key:'episode',  label:'Full episode', desc:'Thesis + 3 points + strong close',      guide:'Strong opening → central thesis → three points with examples → one thing listeners remember. 15-25 min.'},
+    {key:'hottake',  label:'Hot take',     desc:'One idea fully developed',              guide:"Bare statement → why most think differently → why they're wrong → what changes. 3-5 min."},
+    {key:'keypoints',label:'Key points',  desc:'Map for a live unscripted interview',   guide:'5-8 key points: concept + example + bridge to next. Plus 2 anecdotes, the closing line.'},
+  ]},
+];
+
+// ── STATE ─────────────────────────────────────────────────
+const saved=LS.json(SK,{});
+const conf=LS.json(CK,{});
+const oldGeminiKey=LS.get('feliks-api-key-gemini');
+const savedKb=saved.kb||{};
+const S={
+  // conf
+  conf: JSON.parse(localStorage.getItem('ss-conf-v2')||'null')||{creator:'',brand:''},
+  // provider / model / keys
+  provider: conf.provider||'gemini',
+  model:    conf.model||(conf.provider==='anthropic'?'claude-sonnet-4-6':conf.provider==='openai'?'gpt-4o':'gemini-3.1-flash-lite'),
+  keys:{
+    gemini:    conf.keys?.gemini    || oldGeminiKey || null,
+    anthropic: conf.keys?.anthropic || null,
+    openai:    conf.keys?.openai    || null,
+  },
+  // setup
+  setupProvider:'gemini', setupStep:1, setupKey:'', setupErr:'',
+  // settings overlay
+  showSettings:false, settingsTab:'gemini', settingsTmpKey:'', settingsErr:'',
+  // main tabs
+  tab:'studio',
+  // studio
+  selPl:null, selObj:null, topic:'', notes:'', lang:'en', nv:1,
+  showQA:false, qaText:'',
+  duration:null,
+  genIdeas:[], prevIdeaTitles:[], genLoading:false, genErr:null, selIdx:null,
+  generating:false, results:[], scriptErr:null, copiedIdx:null, savedHist:false,
+  showTP:false, tpIdx:0,
+  // kb
+  kbOk:false, nProof:'', pilT:'', pilD:'',
+  docTitle:'', docText:'', docMode:'pdf', docErr:null, extracting:false, newLink:'',
+  // data
+  kb:{...DEFAULT_KB,...savedKb,links:savedKb.links!==undefined?savedKb.links:[...DEFAULT_KB.links]},
+  ideas:saved.ideas||[], hist:saved.hist||[],
+};
+function currentKey(){return S.keys[S.provider]||null;}
+function currentProv(){return PROVIDERS[S.provider];}
+function currentModelName(){const m=(currentProv()?.models||[]).find(x=>x.id===S.model);return m?m.name:S.model;}
+
+// ── HELPERS ───────────────────────────────────────────────
+function esc(s){return s==null?'':String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function uid(){return typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2);}
+function plOf(k){return PL.find(p=>p.key===k);}
+function objOf(pk,ok){const p=plOf(pk);return p&&p.objectives.find(o=>o.key===ok);}
+function kbToStr(kb){
+  const s=[];
+  s.push((S.conf?.creator||'Creator')+'\n'+(kb.about||''));
+  s.push((S.conf?.brand||'Brand')+'\n'+(kb.brand||''));
+  if(kb.proofPoints&&kb.proofPoints.length) s.push('PROOF POINTS\n'+kb.proofPoints.map(p=>'• '+p.text).join('\n'));
+  if(kb.pillars&&kb.pillars.length) s.push('CONTENT PILLARS\n'+kb.pillars.map(p=>'• '+p.title+(p.desc?': '+p.desc:'')).join('\n'));
+  if(kb.links&&kb.links.length){
+    const fetched=kb.links.filter(l=>l.text&&l.text.length>0);
+    const unfetched=kb.links.filter(l=>!l.text||l.text.length===0);
+    if(fetched.length) s.push('WEBSITE CONTENT\n'+fetched.map(l=>'['+l.url+']\n'+l.text.slice(0,3000)).join('\n\n'));
+    if(unfetched.length) s.push('REFERENCE URLS\n'+unfetched.map(l=>l.url).join('\n'));
+  }
+  if(kb.styleExamples&&kb.styleExamples.length) s.push('REFERENCE SCRIPTS — examples of your voice and style, match closely:\n'+kb.styleExamples.map(e=>'['+e.title+']\n'+e.text).join('\n\n'));
+  if(kb.documents&&kb.documents.length) s.push('REFERENCE MATERIAL\n'+kb.documents.map(d=>'['+d.name+']\n'+d.text.slice(0,2000)).join('\n\n'));
+  return s.join('\n\n');
+}
+function buildSys(pl,obj,lang,nv){
+  const lf=(LANGS.find(l=>l.k===lang)||{f:'English'}).f;
+  const vb=nv>1?'\n\nPRODUCE EXACTLY '+nv+' VARIANTS with different openings. Separate each with a line containing only "---". Label them VARIANT 1, VARIANT 2'+(nv===3?', VARIANT 3':'')+'.'  :'';
+  const dur=S.duration||durDefault(obj.key);
+  const durConstraint='\n\nDURATION: '+durLabel(dur)+' — approximately '+durWords(dur)+' words at normal speaking pace. Hard limit.';
+
+  const what=`
+WHAT YOU ARE WRITING
+This is a word-for-word script that ${S.conf?.creator||'the creator'} will read while recording alone on camera.
+Every sentence will be spoken out loud. Nothing will appear on screen as text.
+
+WHAT THIS IS NOT — avoid at all costs:
+- Landing page copy or ad taglines ("Stop rebuilding. Start deciding.")
+- Alliterative slogans or billboard phrases
+- Third-person brand voice ("At [Brand], we...")
+- Headline stacks ("Faster. Smarter. Better.")
+- Any sentence that sounds better written than spoken
+
+WHAT GOOD LOOKS LIKE:
+A good script sounds like a specific person thinking through something real.
+Example of what TO write:
+"Last week a client called me frustrated. Six months into a project, same problems as before. The tools had changed. The root cause hadn't. That's the trap nobody talks about — and it's exactly what we solve."
+
+Example of what NOT to write:
+"This software eliminates the problem. At [Brand], we solve it. Stop wasting time."g. Start deciding."
+
+The first sounds like a real person talking. The second sounds like a landing page.
+
+VOICE RULES:
+- First person singular ("I", "we" when referring to the brand)
+- Contractions are mandatory: "that's", "it's", "you're", "don't"
+- Short sentences mixed with longer ones — spoken rhythm, not written prose
+- One concrete specific beats ten general claims
+- If there's a number, a client situation, or a real example in the knowledge base — use it`;
+
+  return 'You write word-for-word scripts for a founder filming himself alone on camera. Your output is exactly what he will say — not what will appear on screen.\n\n'+kbToStr(S.kb)+durConstraint+what+structureInstruction(obj.key)+'\n\nPLATFORM — '+pl.label+'\n'+pl.tone+'\n\nOBJECTIVE — '+obj.label+'\n'+obj.guide+'\n\nLanguage: '+lf+'. Output only the labeled script sections. Nothing else.'+vb;
+}
+
+// ── SVG ICONS ─────────────────────────────────────────────
+const ICO={
+  li:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4V9h4v1.5A6 6 0 0 1 22 14"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>`,
+  me:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>`,
+  lp:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
+  po:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>`,
+  spk:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/></svg>`,
+  cpy:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`,
+  chk:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`,
+  pls:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>`,
+  trs:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>`,
+  alr:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+  fil:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
+  lnk:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`,
+  xx:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>`,
+  grd:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>`,
+  db:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>`,
+  hst:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>`,
+  ldr:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.2-8.6"/></svg>`,
+};
+
+// ── API LAYER ─────────────────────────────────────────────
+function parseGemini(d){
+  const parts=d?.candidates?.[0]?.content?.parts||[];
+  const real=parts.find(p=>!p.thought&&p.text)||parts[parts.length-1];
+  return real?.text||'';
+}
+async function callGemini(sys,user,maxTokens,attempt){
+  attempt=attempt||1;
+  const url=`https://generativelanguage.googleapis.com/v1beta/models/${S.model}:generateContent?key=${S.keys.gemini}`;
+  const rsp=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    system_instruction:{parts:[{text:sys}]},
+    contents:[{role:'user',parts:[{text:user}]}],
+    generationConfig:{maxOutputTokens:maxTokens||4000,temperature:1.4}
+  })});
+  if(!rsp.ok){const e=await rsp.json().catch(()=>({}));
+    if((rsp.status===503||rsp.status===429)&&attempt<4){await new Promise(r=>setTimeout(r,attempt*3000));return callGemini(sys,user,maxTokens,attempt+1);}
+    throw new Error(e?.error?.message||'API error '+rsp.status);}
+  return parseGemini(await rsp.json());
+}
+async function callAnthropic(sys,user,maxTokens){
+  const rsp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':S.keys.anthropic,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({
+    model:S.model, max_tokens:maxTokens||2000, system:sys, messages:[{role:'user',content:user}]
+  })});
+  if(!rsp.ok){const e=await rsp.json().catch(()=>({}));throw new Error(e?.error?.message||'API error '+rsp.status);}
+  const d=await rsp.json();return d?.content?.[0]?.text||'';
+}
+async function callOpenAI(sys,user,maxTokens){
+  const rsp=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+S.keys.openai},body:JSON.stringify({
+    model:S.model, max_tokens:maxTokens||2000,
+    messages:[{role:'system',content:sys},{role:'user',content:user}]
+  })});
+  if(!rsp.ok){const e=await rsp.json().catch(()=>({}));throw new Error(e?.error?.message||'API error '+rsp.status);}
+  const d=await rsp.json();return d?.choices?.[0]?.message?.content||'';
+}
+async function callAI(sys,user,maxTokens){
+  if(S.provider==='gemini')    return callGemini(sys,user,maxTokens);
+  if(S.provider==='anthropic') return callAnthropic(sys,user,maxTokens);
+  if(S.provider==='openai')    return callOpenAI(sys,user,maxTokens);
+  throw new Error('Unknown provider');
+}
+async function callAIPDF(b64,user){
+  if(S.provider==='gemini'){
+    const url=`https://generativelanguage.googleapis.com/v1beta/models/${S.model}:generateContent?key=${S.keys.gemini}`;
+    const rsp=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{inline_data:{mime_type:'application/pdf',data:b64}},{text:user}]}],generationConfig:{maxOutputTokens:1000}})});
+    if(!rsp.ok)throw new Error();return parseGemini(await rsp.json());
+  }
+  if(S.provider==='anthropic'){
+    const rsp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':S.keys.anthropic,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:S.model,max_tokens:1000,messages:[{role:'user',content:[{type:'document',source:{type:'base64',media_type:'application/pdf',data:b64}},{type:'text',text:user}]}]})});
+    if(!rsp.ok)throw new Error();const d=await rsp.json();return d?.content?.[0]?.text||'';
+  }
+  // openai: no native PDF support, skip
+  throw new Error('PDF upload not supported for OpenAI — use paste text instead.');
+}
+
+
+// ── STRUCTURES ────────────────────────────────────────────
+// Per-objective section definitions: {k: label, d: instruction for model}
+const STRUCT = {
+  pov:      [{k:'OPENING',  d:'Counter-intuitive statement. Max 15 words. Should invite disagreement.'},
+             {k:'ARGUMENT', d:'2-3 logical steps supporting the position. One concrete example from the KB.'},
+             {k:'CLOSE',    d:'Open question or single takeaway. No call to action.'}],
+  bts:      [{k:'SITUATION',d:'A specific moment you faced. When, what was at stake.'},
+             {k:'PROCESS',  d:'What he did and why. What he chose not to do.'},
+             {k:'LESSON',   d:'What he learned. One sentence maximum.'}],
+  case:     [{k:'CLIENT',   d:"The client's situation before. The specific problem."},
+             {k:'APPROACH', d:'What was done. The mechanism, not just the outcome.'},
+             {k:'RESULT',   d:'The measurable result. One specific number.'},
+             {k:'IMPLICATION',d:'What this means for others in the same situation.'}],
+  cta_li:   [{k:'PROBLEM',  d:'The specific pain of the target viewer. Present tense, second person.'},
+             {k:'SOLUTION', d:'Your product as the direct answer. One mechanism.'},
+             {k:'PROOF',    d:'One proof point that makes it credible.'},
+             {k:'CTA',      d:'The single action. Specific about what happens next.'}],
+  scroll:   [{k:'HOOK',     d:'Max 8 words. Provocation, unexpected number, or uncomfortable truth.'},
+             {k:'DEVELOP',  d:'One idea taken further. 10-15 seconds.'},
+             {k:'CLOSE',    d:'Leave them thinking. Light CTA or none.'}],
+  agitation:[{k:'HOOK',     d:'Recognizable situation in max 10 words.'},
+             {k:'PROBLEM',  d:'The specific pain with precise detail. Make it real.'},
+             {k:'WORSE',    d:'The problem gets worse. A second layer they had not considered.'},
+             {k:'RELEASE',  d:'Your product as the way out. One line.'}],
+  story:    [{k:'SETUP',    d:'Character and situation. Who, what they are trying to do.'},
+             {k:'COMPLICATION',d:'What went wrong or what they discovered.'},
+             {k:'RESOLUTION',d:'How your product changed the outcome.'}],
+  offer:    [{k:'BENEFIT',  d:'The main outcome in one sentence. No setup.'},
+             {k:'PROOF',    d:'One specific result that makes it credible.'},
+             {k:'OBJECTION',d:'The main reason they would not act. Address it directly.'},
+             {k:'CTA',      d:'Specific action and what happens next.'}],
+  hero:     [{k:'PROBLEM',  d:'Who this is for and the problem they have right now.'},
+             {k:'SOLUTION', d:'Your product as the direct answer. What it does.'},
+             {k:'HOW',      d:'The mechanism. How it actually works.'},
+             {k:'PROOF',    d:'Why they should believe it. One proof point.'},
+             {k:'CTA',      d:'The specific next step.'}],
+  hiw:      [{k:'START',    d:"Where the customer is today. The painful current situation."},
+             {k:'STEP 1',   d:'First step: what the customer does and what the product does.'},
+             {k:'STEP 2',   d:'Second step.'},
+             {k:'STEP 3',   d:'Third step.'},
+             {k:'END',      d:'Where they end up. The transformation in one sentence.'}],
+  proof:    [{k:'CLAIM',    d:'The strongest result the brand has produced. Lead with the number.'},
+             {k:'STORY',    d:'One specific case that proves it. Real details.'},
+             {k:'SCALE',    d:'How many companies have seen this. The breadth.'},
+             {k:'INVITATION',d:'The implication for the viewer.'}],
+  close:    [{k:'RECAP',    d:'What they have just seen. Two sentences maximum.'},
+             {k:'OBJECTION',d:'The main reason they might not act. Remove it directly.'},
+             {k:'ACTION',   d:'One clear specific action. Make it immediate.'}],
+  intro:    [{k:'BACKGROUND',d:'The most interesting thing about your path. Not a CV.'},
+             {k:'DISCOVERY',d:'What he discovered that others had not seen.'},
+             {k:'BUILDING', d:'What he is building and the specific why.'},
+             {k:'RELEVANCE',d:'Why this matters to this audience right now.'}],
+  episode:  [{k:'HOOK',     d:'The most interesting thing that will come up.'},
+             {k:'THESIS',   d:'The central claim in one sentence.'},
+             {k:'POINT 1',  d:'First argument with concrete example.'},
+             {k:'POINT 2',  d:'Second argument with concrete example.'},
+             {k:'POINT 3',  d:'Third argument with concrete example.'},
+             {k:'CLOSE',    d:'The one thing listeners should remember tomorrow.'}],
+  hottake:  [{k:'STATEMENT',  d:'The bare take. No softening.'},
+             {k:'DISAGREEMENT',d:'Why most people think differently. Be fair.'},
+             {k:'REVERSAL',   d:'Why they are wrong or missing something crucial.'},
+             {k:'IMPLICATION',d:'What changes if this take is right.'}],
+  keypoints:[{k:'POINT 1',   d:'Concept in one sentence + example + bridge to next.'},
+             {k:'POINT 2',   d:'Same structure.'},
+             {k:'POINT 3',   d:'Same structure.'},
+             {k:'POINT 4',   d:'Same structure.'},
+             {k:'ANECDOTE 1',d:'A ready-to-use story from real experience.'},
+             {k:'ANECDOTE 2',d:'Another ready-to-use story.'},
+             {k:'CLOSE',     d:"The line you want to end the conversation on."}],
+};
+function structureInstruction(objKey){
+  const secs=STRUCT[objKey];
+  if(!secs)return '';
+  const list=secs.map(s=>'['+s.k+']\n('+s.d+')').join('\n\n');
+  return '\n\nOUTPUT STRUCTURE — write the script using these exact labeled sections. Use the exact label in brackets on its own line, then the script content below it:\n\n'+list+'\n\nWrite real spoken script content under each label. Do not write the descriptions.';
+}
+
+
+// ── TELEPROMPTER ENGINE ───────────────────────────────────
+const TP={active:false,speed:3,raf:null,lastTime:null};
+// speed levels in px/second
+const TP_SPEEDS=[25,45,70,100,140];
+function tpPxSpeed(){return TP_SPEEDS[Math.max(0,Math.min(4,TP.speed-1))];}
+function tpSpeedLabel(){return['Slow','','Normal','','Fast'][TP.speed-1]||'';}
+function tpPlay(){
+  if(TP.active)return;
+  TP.active=true;TP.lastTime=null;
+  TP.raf=requestAnimationFrame(tpFrame);
+  tpUpdateUI();
+}
+function tpPause(){
+  TP.active=false;
+  if(TP.raf){cancelAnimationFrame(TP.raf);TP.raf=null;}
+  tpUpdateUI();
+}
+function tpToggle(){TP.active?tpPause():tpPlay();}
+function tpFrame(ts){
+  if(!TP.active)return;
+  const el=document.getElementById('tp-overlay');
+  if(!el){TP.active=false;return;}
+  if(TP.lastTime){
+    const dt=Math.min((ts-TP.lastTime)/1000,.05);
+    el.scrollTop+=tpPxSpeed()*dt;
+    if(el.scrollTop+el.clientHeight>=el.scrollHeight-30){tpPause();return;}
+  }
+  TP.lastTime=ts;
+  TP.raf=requestAnimationFrame(tpFrame);
+}
+function tpSlower(){if(TP.speed>1){TP.speed--;tpUpdateUI();}}
+function tpFaster(){if(TP.speed<5){TP.speed++;tpUpdateUI();}}
+function tpReset(){const el=document.getElementById('tp-overlay');if(el)el.scrollTop=0;tpPause();}
+function tpClose(){tpPause();TP.lastTime=null;doAction('closeTP');}
+function tpUpdateUI(){
+  const play=document.getElementById('tp-play');
+  const spd=document.getElementById('tp-spd');
+  const hint=document.getElementById('tp-hint');
+  if(play)play.textContent=TP.active?'⏸':'▶';
+  if(spd){const dots='●'.repeat(TP.speed)+'○'.repeat(5-TP.speed);spd.textContent=dots;}
+  if(hint)hint.style.opacity=TP.active?'0':'1';
+}
+
+// ── HTML TEMPLATES ────────────────────────────────────────
+function cleanScript(text){
+  // Strip [SECTION LABEL] lines and normalize whitespace
+  return text
+    .replace(/^\[[^\]]+\]\s*\n?/gm,'')
+    .replace(/\n{3,}/g,'\n\n')
+    .trim();
+}
+function parseSections(text){
+  // Extract [LABEL]\ncontent blocks
+  const re=/\[([^\]]+)\]\n?((?:(?!\n\[)[\s\S])*)/g;
+  const secs=[];let m;
+  while((m=re.exec(text))!==null){
+    const content=m[2].trim();
+    if(content) secs.push({k:m[1].trim(),text:content});
+  }
+  return secs.length>=2?secs:null;
+}
+function rebuildFromSections(secs){
+  return secs.map(s=>'['+s.k+']\n'+s.text).join('\n\n');
+}
+function updateSection(ri,sk,val){
+  const secs=parseSections(S.results[ri]);
+  if(!secs){S.results[ri]=val;return;}
+  const updated=secs.map(s=>s.k===sk?{...s,text:val}:s);
+  S.results[ri]=rebuildFromSections(updated);
+}
+
+function sh(label){return `<div class="sh"><span class="fm xs caps">${esc(label)}</span><div class="rule"></div></div>`;}
+function badge(text,v){return `<span class="badge b${v||'a'}">${esc(text)}</span>`;}
+function empty(title,sub){return `<div class="empty"><p class="sm dim mb1">${esc(title)}</p>${sub?`<p class="xs muted">${esc(sub)}</p>`:''}</div>`;}
+
+function renderSetup(){
+  const{setupProvider:sp,setupStep:step,setupKey:key,setupErr:err}=S;
+  const prov=PROVIDERS[sp];
+  const dot=(n)=>`<div class="sdot ${step>=n?'done':'todo'}">${step>n?ICO.chk:n}</div>`;
+  const line=(i)=>i<2?`<div class="sline ${step>i+1?'done':'todo'}"></div>`:'';
+  const dots=[1,2,3].map((n,i)=>dot(n)+line(i)).join('');
+  let c='';
+  if(step===1) c=`
+    <h2 class="h2 mb4">Let's get you set up</h2>
+    <div class="space4 mb6">
+      <div>
+        <label class="fm xs caps muted block mb2">Your name or alias</label>
+        <input id="conf-creator" class="ta wfull sm" placeholder="e.g. Marco, Sarah, The Team…" value="${esc(S.conf?.creator||'')}"/>
+      </div>
+      <div>
+        <label class="fm xs caps muted block mb2">Brand / Product</label>
+        <input id="conf-brand" class="ta wfull sm" placeholder="e.g. Acme SaaS, Marco's Agency…" value="${esc(S.conf?.brand||'')}"/>
+      </div>
+    </div>
+    <p class="fm xs caps muted mb4">Choose your AI provider</p>
+    <div class="space4 mb6">
+      ${PROV_IDS.map(id=>{const p=PROVIDERS[id];return `
+        <button class="border rlg p4 wfull flex items-c g3 t${sp===id?' border-amber bg-amber-dk':''}" data-action="setupProv:${id}" style="text-align:left">
+          <div class="min0 f1">
+            <p class="sm semi mb1">${p.name}</p>
+            <p class="xs muted">Key from ${id==='gemini'?'aistudio.google.com':id==='anthropic'?'console.anthropic.com':'platform.openai.com'}</p>
+          </div>
+          <span class="${p.badgeClass} fm xs caps py1 px2 rfull">${p.badge}</span>
+        </button>`}).join('')}
+    </div>
+    <button class="btn-p wfull" data-action="setupStep:2">Continue with ${prov.name} →</button>`;
+  else if(step===2) c=`
+    <h2 class="h2 mb4">Get your ${prov.name} key</h2>
+    <div class="border rlg p4 mb4 space4">
+      ${prov.steps.map((s,i)=>`<p class="sm">${'①②③'[i]} ${esc(s)}</p>`).join('')}
+    </div>
+    <a href="${prov.docsUrl}" target="_blank" class="btn-o t mb5" style="display:inline-flex">Open ${prov.docsUrl.replace('https://','').split('/')[0]} →</a>
+    <div class="flex just-b items-c">
+      <button class="btn-g" data-action="setupStep:1">← Back</button>
+      <button class="btn-p" data-action="setupStep:3">I have my key →</button>
+    </div>`;
+  else c=`
+    <h2 class="h2 mb2">Paste your ${prov.name} key</h2>
+    <p class="sm dim mb4">Stored only in this browser.</p>
+    <input id="setup-key-input" class="inp mb2" placeholder="${esc(prov.keyHint)}" value="${esc(key)}"
+      oninput="S.setupKey=this.value;S.setupErr=''"
+      onkeydown="if(event.key==='Enter')doAction('submitSetup')"/>
+    ${err?`<p class="xs c-rose mb3">${ICO.alr} ${esc(err)}</p>`:''}
+    <button class="btn-p wfull mb3" data-action="submitSetup">Start →</button>
+    <div class="flex just-b items-c">
+      <button class="btn-g" data-action="setupStep:2">← Back</button>
+      <p class="xs muted">You'll only need to do this once.</p>
+    </div>`;
+  return `<div class="setup-page"><div class="setup-box">
+    <p class="fm xs caps muted mb2">${esc(S.conf?.brand||'Script Studio')}</p>
+    <h1 class="ff h1">Script Studio</h1>
+    <div class="flex items-c mb8">${dots}</div>${c}
+  </div></div>`;
+}
+
+function renderSettings(){
+  const{settingsTab:tab,settingsTmpKey:tmpKey,settingsErr:err}=S;
+  const p=PROVIDERS[tab];
+  const stored=S.keys[tab];
+  const isActive=S.provider===tab;
+  const modelBtns=p.models.map(m=>`<button class="model-btn${S.model===m.id&&isActive?' on':''}" data-action="setModel:${m.id}">
+    <span class="mb-name">${m.name}</span><span class="mb-note">${m.note}</span>
+  </button>`).join('');
+  const keySection=stored?`
+    <div class="flex g2 items-c">
+      <span class="sm dim f1">${stored.slice(0,8)}…${stored.slice(-4)}</span>
+      <button class="btn-g" data-action="clearProvKey:${tab}">Remove</button>
+    </div>
+    ${!isActive?`<button class="btn-p wfull mt2" data-action="activateProv:${tab}">Use ${p.name}</button>`:`<p class="xs muted mt2">✓ Currently active</p>`}
+  `:`
+    <input id="settings-key-input" class="inp mb2" placeholder="${esc(p.keyHint)}"
+      oninput="S.settingsTmpKey=this.value;S.settingsErr=''"
+      onkeydown="if(event.key==='Enter')doAction('saveProvKey:${tab}')"/>
+    ${err?`<p class="xs c-rose mb2">${ICO.alr} ${esc(err)}</p>`:''}
+    <button class="btn-p wfull" data-action="saveProvKey:${tab}">Save & use ${p.name}</button>
+  `;
+  return `<div class="overlay" onclick="if(event.target===this)doAction('closeSettings')">
+    <div class="settings-box">
+      <div class="settings-head">
+        <p class="sm semi">Model & API Key</p>
+        <button class="btn-del" data-action="closeSettings">${ICO.xx}</button>
+      </div>
+      <div class="settings-body">
+        <div class="prov-tabs mb4">
+          ${PROV_IDS.map(id=>{const pr=PROVIDERS[id];const ok=!!S.keys[id];return `
+            <button class="prov-tab${tab===id?' on':''}" data-action="settingsTab:${id}">
+              <span class="pt-name">${pr.name}</span>
+              <span class="${pr.badgeClass} pt-badge">${pr.badge}</span>
+              ${ok?`<span class="xs" style="color:#4ade80">✓</span>`:``}
+            </button>`}).join('')}
+        </div>
+        ${sh('Model')}
+        <div class="mb4">${modelBtns}</div>
+        ${sh('API Key')}
+        <div>${keySection}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderTP(){
+  const text=cleanScript(S.results[S.tpIdx]||'');
+  const words=text.split(/\s+/).filter(Boolean).length;
+  const mins=Math.round(words/150*10)/10;
+  const dots='\u25cf'.repeat(TP.speed)+'\u25cb'.repeat(5-TP.speed);
+  return `<div class="tp-overlay" id="tp-overlay" onclick="tpToggle()">
+    <p class="tp-info">${words} words · ~${mins} min</p>
+    <div class="tp-content">
+      <p class="tp-text">${esc(text)}</p>
+      <div style="height:50vh"></div>
+    </div>
+    <div id="tp-hint" class="tp-hint">Tap or press Space to start</div>
+    <div class="tp-bar" onclick="event.stopPropagation()">
+      <button class="tp-btn" onclick="tpClose()">&#10005;</button>
+      <div class="flex items-c g3">
+        <button class="tp-btn" onclick="tpSlower()">&minus;</button>
+        <span id="tp-spd" class="tp-spd">${dots}</span>
+        <button class="tp-btn" onclick="tpFaster()">+</button>
+      </div>
+      <button class="tp-play" id="tp-play" onclick="tpToggle()">&#9654;</button>
+    </div>
+  </div>`;
+}
+
+
+function renderMain(){
+  const{tab}=S;
+  const tabs=[{id:'studio',label:'Studio',ico:'grd'},{id:'kb',label:'Knowledge Base',ico:'db'},{id:'history',label:'History',ico:'hst'}];
+  const nav=tabs.map(t=>`<button class="ntab${tab===t.id?' on':''}" data-action="tab:${t.id}">${ICO[t.ico]} ${t.label}</button>`).join('');
+  const prov=currentProv();
+  const modelIndicator=`<button class="model-indicator" data-action="openSettings">
+    <span class="mi-dot ${prov?.dotClass||''}"></span>
+    <span>${esc(currentModelName())}</span>
+  </button>`;
+  let body=tab==='studio'?renderStudio():tab==='kb'?renderKB():renderHistory();
+  return `${S.showSettings?renderSettings():''}${S.showTP?renderTP():''}
+  <div class="page"><div class="wrap">
+    <header class="mb8">
+      <div class="flex just-b items-s">
+        <div><p class="fm xs caps muted mb2">${esc(S.conf?.brand||'Script Studio')}</p>
+          <h1 class="ff h1">Script Studio</h1>
+          <p class="sm dim mt2">Platform → objective → ideas → script.</p>
+        </div>
+        ${modelIndicator}
+      </div>
+    </header>
+    <nav class="nav">${nav}</nav>${body}
+  </div></div>`;
+}
+
+function renderStudio(){
+  const{selPl,selObj,topic,notes,lang,nv,showQA,qaText,genIdeas,genLoading,genErr,selIdx,generating,results,scriptErr,copiedIdx,savedHist,ideas}=S;
+  const pl=plOf(selPl),obj=pl&&objOf(selPl,selObj);
+  const platBtns=PL.map(p=>`<button class="plat-btn${selPl===p.key?' on':''}" data-action="platform:${p.key}">${ICO[p.key==='linkedin'?'li':p.key==='meta'?'me':p.key==='landing'?'lp':'po']}<span>${p.label}</span></button>`).join('');
+  const objSection=pl?`<div>${sh('Objective')}<div class="grid2">${pl.objectives.map(o=>`<button class="obj-btn${selObj===o.key?' on':''}" data-action="objective:${o.key}"><span class="obj-label">${esc(o.label)}</span><span class="obj-desc">${esc(o.desc)}</span></button>`).join('')}</div></div>`:'';
+  const ideasHtml=genIdeas.map((idea,i)=>{
+    const ip=plOf(idea.platform),io=ip&&ip.objectives.find(o=>o.key===idea.objective);
+    const isSaved=ideas.some(s=>s.title===idea.title);
+    return `<div class="idea-card${selIdx===i?' on':''}" data-action="useIdea:${i}">
+      <p class="idea-title">${esc(idea.title)}</p>
+      <div class="badges">${ip?badge(ip.label,'a'):''}${io?badge(io.label,'t'):''}</div>
+      ${idea.angle?`<p class="idea-angle">${esc(idea.angle)}</p>`:''}
+      <div class="ia-row"><span class="xs fm caps ia-use">${selIdx===i?'✓ Selected':'Use →'}</span>
+      <button class="ia-save${isSaved?' saved':''}" data-action="saveIdea:${i}" onclick="event.stopPropagation()">${isSaved?'✓ Saved':'Save'}</button></div>
+    </div>`;
+  }).join('');
+  const canGen=!!(selPl&&selObj&&topic.trim())&&!generating;
+  const langBtns=LANGS.map(l=>`<button class="chip rfull${lang===l.k?' on':''}" data-action="lang:${l.k}">${l.l}</button>`).join('');
+  const nvBtns=[1,2,3].map(n=>`<button class="btn-rnd w32h32${nv===n?' on':''}" data-action="nv:${n}">${n}</button>`).join('');
+  const resultsHtml=results.map((text,i)=>{
+    const secs=parseSections(text);
+    const body=secs
+      ? secs.map(s=>`<div class="script-sec"><p class="sec-lbl fm xs caps">${esc(s.k)}</p><textarea class="ta script-ta" rows="${Math.max(2,s.text.split('\n').length+1)}" oninput="updateSection(${i},'${s.k.replace(/'/g,"\\'")}',this.value)">${esc(s.text)}</textarea></div>`).join('')
+      : `<textarea class="ta prewrap lh-loose" style="min-height:160px;background:transparent;border:none;resize:vertical;color:#f4f4f5" oninput="S.results[${i}]=this.value">${esc(text)}</textarea>`;
+    return `<div class="card">${results.length>1?`<div class="card-h"><span class="vl">Variant ${i+1}</span></div>`:''}<div class="card-b">${body}</div><div class="card-f flex just-e"><button class="btn-cp" data-action="copy:${i}">${copiedIdx===i?ICO.chk+' Copied':ICO.cpy+' Copy'}</button></div></div>`;
+  }).join('');
+  const chips=ideas.map(idea=>`<button class="chip${topic===idea.title?' on':''}" data-action="useTopic:${esc(idea.title)}">${esc(idea.title)}</button>`).join('');
+  return `<div class="space8">
+    <div>${sh('Platform')}<div class="grid4">${platBtns}</div></div>
+    ${objSection}
+    ${selObj?`<div>${sh('Duration')}
+      <div class="flex wrap- g2 items-c mb2">
+        ${durOpts(selObj).map(d=>`<button class="chip rfull${S.duration===d.v?' on':''}${d.s&&S.duration===null?' chip-sug':''}" data-action="setDuration:${d.v}">${d.l}</button>`).join('')}
+      </div>
+      <p class="xs muted">≈ ${durWords(S.duration||durDefault(selObj))} words · best practice for ${pl.label} ${obj.label}</p>
+    </div>`:''}
+    <div>${sh('Generate ideas')}
+      <button class="btn-o t mb4" data-action="genIdeas" ${genLoading?'disabled':''}>
+        ${genLoading?ICO.ldr:ICO.spk+' '}${genLoading?'Generating…':selPl&&selObj?`Generate ${pl.label} × ${obj.label} ideas`:selPl?`Generate ${pl.label} ideas`:'Generate ideas'}
+      </button>
+      ${genErr?`<p class="flex items-c g2 xs c-rose mb3">${ICO.alr} ${esc(genErr)}</p>`:''}
+      ${genIdeas.length>0?`<div class="grid2">${ideasHtml}</div>`:!genLoading?`<p class="xs muted">${selPl&&selObj?`Will generate ${pl.label} × ${obj.label} ideas.`:selPl?`Will generate ideas across ${pl.label} objectives.`:'Select platform and objective above.'}</p>`:''}
+    </div>
+    <div>${sh('Topic')}
+      ${ideas.length>0?`<p class="xs muted mb2">Saved ideas — click to use</p>`:''}
+      <div class="flex wrap- g2 mb3 items-c">
+        ${chips}${!showQA?`<button class="chip chip-add" data-action="showQA">+ Save idea</button>`:''}
+      </div>
+      ${showQA?`<div class="flex g2 mb3 items-c">
+        <input id="qa-input" class="qa-inp" placeholder="Idea title — Enter to save" value="${esc(qaText)}"
+          oninput="S.qaText=this.value" onkeydown="if(event.key==='Enter')doAction('quickAdd');if(event.key==='Escape')doAction('hideQA')" autofocus/>
+        <button class="btn-sv" data-action="quickAdd">Save</button>
+        <button class="btn-del" data-action="hideQA">${ICO.xx}</button>
+      </div>`:''}
+      <textarea id="topic-input" class="ta" rows="2" placeholder="What is this script about?" oninput="S.topic=this.value">${esc(topic)}</textarea>
+    </div>
+    ${selObj?`<div class="space5">
+      <div class="flex wrap- g6 items-c">
+        <div class="flex g2 items-c"><span class="fm xs caps muted">Variants</span><div class="flex g1">${nvBtns}</div></div>
+        <div class="flex g2 items-c"><span class="fm xs caps muted">Language</span><div class="flex g1">${langBtns}</div></div>
+      </div>
+      <details><summary class="fm xs caps muted sel-none">+ Script notes</summary>
+        <textarea id="notes-input" class="ta mt2" rows="2" placeholder="Max length, references, things to avoid…" oninput="S.notes=this.value">${esc(notes)}</textarea>
+      </details>
+      <button class="btn-p" data-action="genScript" style="min-width:200px">
+        ${generating?ICO.ldr:ICO.spk} ${generating?'Generating…':'Generate script'+(nv>1?' ('+nv+' variants)':'')}
+      </button>
+      ${scriptErr?`<p class="flex g2 items-c xs c-rose">${ICO.alr} ${esc(scriptErr)}</p>`:''}
+    </div>`:''}
+    ${results.length>0?`<div class="space4">
+      <div class="flex just-b wrap- g2 items-c">
+        <p class="fm xs caps muted">${pl?pl.label:''}<span style="color:#3f3f46"> × </span>${obj?obj.label:''}</p>
+        <div class="flex g4">
+          <button class="btn-g" data-action="genScript" ${generating?'disabled':''}>↻ Regenerate</button>
+          <button class="btn-g" data-action="saveHist">${savedHist?'✓ Saved':'+ History'}</button>
+        </div>
+      </div>${resultsHtml}
+      <div class="tp-cta">
+        <p class="xs muted mb3">Review and edit each section above — then open fullscreen to record.</p>
+        <button class="btn-p" data-action="openTP:0">⛶ Open Teleprompter</button>
+        ${results.length>1?`<div class="flex g2 just-c mt3">${results.map((_,i)=>`<button class="chip rfull" data-action="openTP:${i}">Variant ${i+1}</button>`).join('')}</div>`:''}
+      </div>
+    </div>`:''}
+  </div>`;
+}
+
+function renderKB(){
+  const{kb,kbOk,nProof,pilT,pilD,docTitle,docText,docMode,docErr,extracting,newLink}=S;
+  const proofItems=kb.proofPoints.map(p=>`<div class="kbi"><p class="sm kbi-label">${esc(p.text)}</p><button class="btn-del shrink0" data-action="delProof:${p.id}">${ICO.trs}</button></div>`).join('');
+  const pillarItems=kb.pillars.map(p=>`<div class="kbi"><div class="min0"><p class="sm semi kbi-label">${esc(p.title)}</p>${p.desc?`<p class="xs muted mt1">${esc(p.desc)}</p>`:''}</div><button class="btn-del shrink0" data-action="delPillar:${p.id}">${ICO.trs}</button></div>`).join('');
+  const docItems=kb.documents.map(doc=>`<div class="kbi"><div class="flex g2 items-c min0">${ICO.fil}<div class="min0"><p class="sm truncate">${esc(doc.name)}</p><p class="xs muted">${doc.text.length.toLocaleString()} chars</p></div></div><button class="btn-del shrink0" data-action="delDoc:${doc.id}">${ICO.trs}</button></div>`).join('');
+  const links=kb.links||[];
+  const linkItems=links.map(l=>{
+    const fetched=l.status==='done',fetching=l.status==='fetching',err=l.status==='error';
+    return `<div class="kbi">
+      <div class="flex col min0 g1">
+        <p class="sm truncate">${ICO.lnk} ${esc(l.url)}</p>
+        ${fetched?`<p class="xs muted">${l.text.length.toLocaleString()} chars fetched</p>`:''}
+        ${err?`<p class="xs c-rose">${esc(l.error||'Error')}</p>`:''}
+        ${l.status==='pending'?`<p class="xs muted">Not fetched yet</p>`:''}
+        ${fetching?`<p class="xs muted">${ICO.ldr} Fetching…</p>`:''}
+      </div>
+      <div class="flex g2 items-c shrink0">
+        ${!fetching?`<button class="btn-g" data-action="fetchLink:${l.id}">${fetched?'↻ Refresh':'Fetch'}</button>`:''}
+        <button class="btn-del" data-action="delLink:${l.id}">${ICO.trs}</button>
+      </div>
+    </div>`;
+  }).join('');
+  const pdfNote=S.provider==='openai'?`<p class="xs c-rose mt2">${ICO.alr} PDF upload not supported with OpenAI — use "Paste text" instead.</p>`:'';
+  return `<div class="space10 max-2xl">
+    <div>${sh('Core information')}
+      <div class="space4">
+        <div><label class="sm semi mb1" style="display:block">About ${esc(S.conf?.creator||'you')}</label>
+          <p class="xs muted mb2">Background, how you think and talk, what you stand for, phrases you use — and never use.</p>
+          <textarea id="kb-about" class="ta" rows="4" oninput="S.kb.about=this.value">${esc(kb.about)}</textarea>
+        </div>
+        <div><label class="sm semi mb1" style="display:block">${esc(S.conf?.brand||'Brand / Product')}</label>
+          <p class="xs muted mb2">What your product or service does, who it's for, and what makes it different.</p>
+          <textarea id="kb-multibase" class="ta" rows="4" oninput="S.kb.brand=this.value">${esc(kb.brand)}</textarea>
+        </div>
+        <div class="flex g3 items-c"><button class="btn-sv" data-action="saveKB">Save</button>${kbOk?`<span class="sm dim">Saved ✓</span>`:''}</div>
+      </div>
+    </div>
+    <div>${sh('Links')}
+      <p class="xs muted mb4">URLs fetched as live knowledge — the content becomes part of every prompt.</p>
+      ${!links.length?empty('No links yet'):linkItems?`<div class="space4 mb3">${linkItems}</div>`:''}
+      <div class="flex g2">
+        <input id="newlink-input" class="inp f1" placeholder="https://…" value="${esc(newLink)}" oninput="S.newLink=this.value" onkeydown="if(event.key==='Enter')doAction('addLink')"/>
+        <button class="btn-sq w32h32" style="height:38px" data-action="addLink">${ICO.pls}</button>
+      </div>
+    </div>
+    <div>${sh('Proof points')}
+      <p class="xs muted mb4">Specific numbers, results, client wins.</p>
+      ${!kb.proofPoints.length?empty('No proof points yet','"Reduced reporting from 3 days to 4 hours for a Swiss retailer"'):`<div class="space4 mb3">${proofItems}</div>`}
+      <div class="flex g2">
+        <input id="nproof-input" class="inp f1" placeholder='"30% faster reporting after switching in Q3"' value="${esc(nProof)}" oninput="S.nProof=this.value" onkeydown="if(event.key==='Enter')doAction('addProof')"/>
+        <button class="btn-sq w32h32" style="height:38px" data-action="addProof">${ICO.pls}</button>
+      </div>
+    </div>
+    <div>${sh('Content pillars')}
+      <p class="xs muted mb4">Recurring themes that guide idea generation.</p>
+      ${!kb.pillars.length?empty('No pillars yet','"Finance team efficiency", "The CFO as data strategist"'):`<div class="space4 mb3">${pillarItems}</div>`}
+      <div class="border rlg p3 space4">
+        <input id="pilt-input" class="inp" placeholder='Title, e.g. "Finance team efficiency"' value="${esc(pilT)}" oninput="S.pilT=this.value"/>
+        <input id="pild-input" class="inp" placeholder="Optional one-liner" value="${esc(pilD)}" oninput="S.pilD=this.value"/>
+        <button class="flex g2 items-c sm dim t" data-action="addPillar" style="cursor:pointer">${ICO.pls} Add pillar</button>
+      </div>
+    </div>
+    <div>${sh('My style')}
+      <p class="xs muted mb4">Paste your best scripts here — they become the style reference for every generation. The more specific and authentic, the better.</p>
+      ${!kb.styleExamples||!kb.styleExamples.length?empty('No reference scripts yet','Add a script you is proud of — his voice, not a template'):`<div class="space4 mb4">${(kb.styleExamples||[]).map(s=>`<div class="kbi"><div class="min0"><p class="sm semi truncate">${esc(s.title)}</p><p class="xs muted">${s.text.length.toLocaleString()} chars</p></div><button class="btn-del shrink0" data-action="delStyleEx:${s.id}">${ICO.trs}</button></div>`).join('')}</div>`}
+      <div class="border rlg p3 space4">
+        <input id="styleex-title" class="inp" placeholder='Title, e.g. "LinkedIn POV — best performing June 2025"' oninput="S.styleExTitle=this.value"/>
+        <textarea id="styleex-text" class="ta" rows="5" placeholder="Paste the full script text here…" oninput="S.styleExText=this.value"></textarea>
+        <button class="flex g2 items-c sm dim t" data-action="addStyleEx" style="cursor:pointer">${ICO.pls} Add reference script</button>
+      </div>
+    </div>
+    <div>${sh('Documents')}
+      <p class="xs muted mb4">Upload PDFs or paste text as source material.</p>
+      ${kb.documents.length>0?`<div class="space4 mb4">${docItems}</div>`:''}
+      <div class="flex g2 mb3">
+        <button class="chip rfull${docMode==='pdf'?' on':''}" data-action="docMode:pdf">Upload PDF</button>
+        <button class="chip rfull${docMode==='text'?' on':''}" data-action="docMode:text">Paste text</button>
+      </div>
+      ${docMode==='pdf'?extracting?`<div class="border rlg flex g2 items-c px4 py4">${ICO.ldr} <span class="sm dim">Reading document…</span></div>`:`<label class="upload" style="cursor:pointer">${ICO.fil}<span class="sm dim">Click to upload a PDF</span><span class="xs muted">Max 10MB</span><input type="file" accept=".pdf,application/pdf" style="display:none" onchange="uploadPDF(this)"/></label>`:
+      `<div class="border rlg p3 space4">
+        <input id="doctitle-input" class="inp" placeholder="Document title" value="${esc(docTitle)}" oninput="S.docTitle=this.value"/>
+        <textarea id="doctext-input" class="ta" rows="4" placeholder="Paste content here…" oninput="S.docText=this.value">${esc(docText)}</textarea>
+        <button class="flex g2 items-c sm dim t" data-action="addTextDoc" style="cursor:pointer">${ICO.pls} Add document</button>
+      </div>`}
+      ${pdfNote}
+      ${docErr?`<p class="flex g2 items-c xs c-rose mt2">${ICO.alr} ${esc(docErr)}</p>`:''}
+    </div>
+  </div>`;
+}
+
+function renderHistory(){
+  const{hist}=S;
+  if(!hist.length) return empty('No scripts saved yet','Generate your first one in Studio and save it');
+  return `<div class="space4">${hist.slice().reverse().map(item=>{
+    const p=plOf(item.platform),o=p&&p.objectives.find(x=>x.key===item.objective);
+    const vars=item.variants||(item.script?[item.script]:[]);
+    return `<details class="border rlg px4 py3">
+      <summary class="fm xs caps muted" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <span>
+          ${p?p.label:item.platform} <span style="color:#3f3f46">×</span> ${o?o.label:item.objective}
+          <span style="color:#3f3f46"> · </span>${(item.lang||'en').toUpperCase()}
+          <span style="color:#3f3f46"> · </span>${new Date(item.ts).toLocaleDateString('en-GB')}
+          ${vars.length>1?`<span style="color:#3f3f46"> · ${vars.length} variants</span>`:''}
+        </span>
+        <button class="btn-del shrink0" onclick="event.stopPropagation();doAction('delHist:${item.id}')">${ICO.trs}</button>
+      </summary>
+      ${item.topic?`<p class="fm xs muted mt2 mb3">"${esc(item.topic)}"</p>`:''}
+      <div class="space4">${vars.map((v,i)=>`${vars.length>1?`<p class="vl xs mb1">Variant ${i+1}</p>`:''}<p class="sm prewrap lh-loose" style="color:#a1a1aa">${esc(v)}</p>`).join('<br>')}</div>
+    </details>`;
+  }).join('')}</div>`;
+}
+
+// ── ACTIONS ───────────────────────────────────────────────
+function doAction(action){
+  const[cmd,...rest]=action.split(':'); const arg=rest.join(':');
+  switch(cmd){
+    // setup
+    case 'setupProv': S.setupProvider=arg;render();break;
+    case 'setupStep': S.setupStep=parseInt(arg);render();break;
+    case 'submitSetup':{
+      const el=document.getElementById('setup-key-input');
+      const k=(el?el.value:S.setupKey).trim();
+      const prov=PROVIDERS[S.setupProvider];
+      if(!prov.keyCheck(k)){S.setupErr='Key format looks wrong — check and try again.';render();break;}
+      S.keys[S.setupProvider]=k;S.provider=S.setupProvider;
+      const firstModel=PROVIDERS[S.setupProvider].models[0]?.id;
+      if(firstModel)S.model=firstModel;
+      persistConf();render();autoFetchPendingLinks();break;}
+    // settings overlay
+    case 'openSettings': S.showSettings=true;S.settingsTab=S.provider;S.settingsTmpKey='';S.settingsErr='';render();break;
+    case 'closeSettings': S.showSettings=false;render();break;
+    case 'settingsTab': S.settingsTab=arg;S.settingsTmpKey='';S.settingsErr='';render();break;
+    case 'setModel':
+      if(S.settingsTab===S.provider) S.model=arg;
+      persistConf();render();break;
+    case 'saveProvKey':{
+      const el=document.getElementById('settings-key-input');
+      const k=(el?el.value:S.settingsTmpKey).trim();
+      const prov=PROVIDERS[arg];
+      if(!prov||!prov.keyCheck(k)){S.settingsErr='Key format looks wrong.';render();break;}
+      S.keys[arg]=k;S.provider=arg;
+      S.model=PROVIDERS[arg].models[0]?.id||S.model;
+      S.showSettings=false;persistConf();render();autoFetchPendingLinks();break;}
+    case 'activateProv':
+      S.provider=arg;S.model=PROVIDERS[arg].models[0]?.id||S.model;
+      S.showSettings=false;persistConf();render();break;
+    case 'clearProvKey':
+      S.keys[arg]=null;
+      if(S.provider===arg){S.provider='gemini';S.model='gemini-2.5-flash';}
+      persistConf();render();break;
+    // main
+    case 'tab':S.tab=arg;render();break;
+    case 'platform':S.selPl=arg;S.selObj=null;S.selIdx=null;S.genIdeas=[];S.results=[];S.scriptErr=null;S.savedHist=false;render();break;
+    case 'objective':S.selObj=arg;S.duration=durDefault(arg);S.results=[];S.scriptErr=null;S.savedHist=false;render();break;
+    case 'genIdeas':genIdeasFn();break;
+    case 'useIdea':{const i=parseInt(arg);const idea=S.genIdeas[i];if(!idea)break;S.topic=idea.title;S.selPl=idea.platform;S.selObj=idea.objective;S.selIdx=i;S.results=[];S.scriptErr=null;S.savedHist=false;render();break;}
+    case 'saveIdea':{const idea=S.genIdeas[parseInt(arg)];if(!idea||S.ideas.some(x=>x.title===idea.title))break;S.ideas=[...S.ideas,{id:uid(),title:idea.title,desc:idea.angle||''}];persist();render();break;}
+    case 'useTopic':S.topic=arg;S.selIdx=null;render();break;
+    case 'showQA':S.showQA=true;render();setTimeout(()=>{const el=document.getElementById('qa-input');if(el)el.focus();},50);break;
+    case 'hideQA':S.showQA=false;S.qaText='';render();break;
+    case 'quickAdd':{const qel=document.getElementById('qa-input');const qt=(qel?qel.value:S.qaText).trim();if(!qt)break;S.ideas=[...S.ideas,{id:uid(),title:qt,desc:''}];S.topic=qt;S.showQA=false;S.qaText='';persist();render();break;}
+    case 'lang':S.lang=arg;render();break;
+    case 'setDuration':S.duration=parseInt(arg);render();break;
+    case 'openTP':{tpPause();TP.lastTime=null;S.showTP=true;S.tpIdx=parseInt(arg)||0;render();break;}
+    case 'closeTP':{tpPause();TP.lastTime=null;S.showTP=false;render();break;}
+    case 'nv':S.nv=parseInt(arg);render();break;
+    case 'genScript':{const tel=document.getElementById('topic-input');if(tel)S.topic=tel.value;genScriptFn();break;}
+    case 'copy':copyScript(parseInt(arg));break;
+    case 'delHist':{S.hist=S.hist.filter(h=>h.id!==arg);persist();render();break;}
+    case 'saveConf':{
+      const cr=document.getElementById('conf-creator')?.value?.trim();
+      const br=document.getElementById('conf-brand')?.value?.trim();
+      if(cr||br){S.conf={creator:cr||S.conf?.creator||'',brand:br||S.conf?.brand||''};localStorage.setItem('ss-conf-v2',JSON.stringify(S.conf));}
+      render();break;}
+    case 'saveHist':{if(!S.results.length)break;const entry={id:uid(),platform:S.selPl,objective:S.selObj,lang:S.lang,topic:S.topic,ts:Date.now(),variants:S.results};S.hist=[...S.hist,entry];persist();S.savedHist=true;render();setTimeout(()=>{S.savedHist=false;},2000);break;}
+    case 'saveKB':persist();S.kbOk=true;render();setTimeout(()=>{S.kbOk=false;},2000);break;
+    case 'addProof':{const pel=document.getElementById('nproof-input');const pt=(pel?pel.value:S.nProof).trim();if(!pt)break;S.kb.proofPoints=[...S.kb.proofPoints,{id:uid(),text:pt}];S.nProof='';persist();render();break;}
+    case 'delProof':S.kb.proofPoints=S.kb.proofPoints.filter(p=>p.id!==arg);persist();render();break;
+    case 'addPillar':{const ple=document.getElementById('pilt-input');const pde=document.getElementById('pild-input');const pt=(ple?ple.value:S.pilT).trim();if(!pt)break;S.kb.pillars=[...S.kb.pillars,{id:uid(),title:pt,desc:(pde?pde.value:S.pilD).trim()}];S.pilT='';S.pilD='';persist();render();break;}
+    case 'delPillar':S.kb.pillars=S.kb.pillars.filter(p=>p.id!==arg);persist();render();break;
+    case 'addTextDoc':{const dte=document.getElementById('doctitle-input');const dxe=document.getElementById('doctext-input');const dn=(dte?dte.value:S.docTitle).trim();const dx=(dxe?dxe.value:S.docText).trim();if(!dn||!dx)break;S.kb.documents=[...S.kb.documents,{id:uid(),name:dn,text:dx}];S.docTitle='';S.docText='';persist();render();break;}
+    case 'delDoc':S.kb.documents=S.kb.documents.filter(d=>d.id!==arg);persist();render();break;
+    case 'addStyleEx':{const te=document.getElementById('styleex-text');const ti=document.getElementById('styleex-title');const txt=(te?te.value:'').trim();const ttl=(ti?ti.value:'').trim();if(!txt||!ttl)break;S.kb.styleExamples=[...S.kb.styleExamples,{id:uid(),title:ttl,text:txt}];persist();render();break;}
+    case 'delStyleEx':S.kb.styleExamples=S.kb.styleExamples.filter(s=>s.id!==arg);persist();render();break;
+    case 'docMode':S.docMode=arg;S.docErr=null;render();break;
+    case 'addLink':{const nle=document.getElementById('newlink-input');if(nle)S.newLink=nle.value;const url=S.newLink.trim();if(!url)break;const normalized=url.startsWith('http')?url:'https://'+url;S.kb.links=[...S.kb.links,{id:uid(),url:normalized,text:'',status:'pending'}];S.newLink='';persist();render();fetchLinkFn(S.kb.links[S.kb.links.length-1].id);break;}
+    case 'delLink':S.kb.links=S.kb.links.filter(l=>l.id!==arg);persist();render();break;
+    case 'fetchLink':fetchLinkFn(arg);break;
+  }
+}
+
+// ── API CALLS ─────────────────────────────────────────────
+async function genIdeasFn(){
+  S.genLoading=true;S.genErr=null;S.genIdeas=[];S.selIdx=null;render();
+  try{
+    const pl=plOf(S.selPl),obj=pl&&objOf(S.selPl,S.selObj);
+    let instr,okeys;
+    if(pl&&obj){instr=`Generate ALL 8 ideas for ${pl.label} with objective "${obj.label}" ONLY.`;okeys=obj.key;}
+    else if(pl){instr=`Generate ALL 8 ideas for ${pl.label} ONLY.`;okeys=pl.objectives.map(o=>o.key).join('|');}
+    else{instr='Generate ideas covering a mix of all platforms.';okeys='pov|bts|case|cta_li|scroll|agitation|story|offer|hero|hiw|proof|close|intro|episode|hottake|keypoints';}
+    const raw=await callAI(
+      'You generate specific, actionable video script ideas for '+( S.conf?.creator||'the creator')+' grounded in their knowledge base.\n\n'+kbToStr(S.kb)+(S.prevIdeaTitles.length?'\n\nDO NOT generate any of these previously used ideas:\n'+S.prevIdeaTitles.map(t=>'- '+t).join('\n'):'')+'\n\n[variation:'+Math.random().toString(36).slice(2,7)+']',
+      `Generate exactly 8 script ideas. ${instr}\nReturn ONLY a valid JSON array:\n[{"title":"...","platform":"linkedin|meta|landing|podcast","objective":"${okeys}","angle":"one sentence"}]`,
+      1500
+    );
+    const si=raw.indexOf('['),ei=raw.lastIndexOf(']');
+    if(si===-1||ei===-1)throw new Error();
+    const parsed=JSON.parse(raw.slice(si,ei+1));
+    const valid=parsed.filter(idea=>{
+      if(!idea.title)return false;
+      if(S.selPl&&idea.platform!==S.selPl)return false;
+      if(S.selObj&&idea.objective!==S.selObj)return false;
+      return PL.some(p=>p.key===idea.platform&&p.objectives.some(o=>o.key===idea.objective));
+    }).slice(0,8);
+    if(!valid.length)throw new Error();
+    // shuffle so the "most obvious" idea isn't always first
+    for(let i=valid.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[valid[i],valid[j]]=[valid[j],valid[i]];}
+    S.prevIdeaTitles=[...S.prevIdeaTitles,...valid.map(x=>x.title)].slice(-24);
+    S.genIdeas=valid;
+  }catch(e){S.genErr='Generation failed: '+(e.message||'try again')+'.';}
+  finally{S.genLoading=false;render();}
+}
+async function genScriptFn(){
+  const pl=plOf(S.selPl),obj=pl&&objOf(S.selPl,S.selObj);
+  if(!pl||!obj||!S.topic.trim()||S.generating)return;
+  S.generating=true;S.scriptErr=null;S.results=[];S.savedHist=false;S.copiedIdx=null;render();
+  try{
+    const _sv=Math.random().toString(36).slice(2,7);
+    const raw=await callAI(buildSys(pl,obj,S.lang,S.nv),'Topic: '+S.topic.trim()+(S.notes.trim()?'\n\nNotes: '+S.notes.trim():'')+'\n\n[session:'+_sv+']',4000);
+    if(!raw)throw new Error();
+    if(S.nv>1){const parts=raw.split(/\n---\n|---\n|\n---/).map(p=>p.replace(/^VARIANT\s*\d+[\s\S]{0,4}\n/i,'').trim()).filter(p=>p.length>30);S.results=parts.length>0?parts.slice(0,S.nv):[raw];}
+    else{S.results=[raw];}
+  }catch(e){S.scriptErr='Generation failed: '+(e.message||'try again')+'.';}
+  finally{S.generating=false;render();}
+}
+async function uploadPDF(input){
+  const f=input.files&&input.files[0];if(!f)return;
+  if(f.size>10*1024*1024){S.docErr='File too large (max 10MB).';render();return;}
+  S.extracting=true;S.docErr=null;render();
+  try{
+    const b64=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(f);});
+    const txt=await callAIPDF(b64,'Extract key information: main arguments, data points, examples, facts. Plain text.');
+    if(!txt)throw new Error();
+    S.kb.documents=[...S.kb.documents,{id:uid(),name:f.name.replace('.pdf',''),text:txt}];persist();
+  }catch(e){S.docErr=e.message||'Extraction failed. Try again or paste text manually.';}
+  finally{S.extracting=false;input.value='';render();}
+}
+async function fetchLinkFn(id){
+  const link=S.kb.links.find(l=>l.id===id);if(!link)return;
+  link.status='fetching';render();
+  try{
+    const ctrl=new AbortController();const timer=setTimeout(()=>ctrl.abort(),20000);
+    const rsp=await fetch('https://r.jina.ai/'+link.url,{signal:ctrl.signal,headers:{'Accept':'text/plain','X-Return-Format':'text','X-No-Cache':'true'}});
+    clearTimeout(timer);if(!rsp.ok)throw new Error('HTTP '+rsp.status);
+    const text=await rsp.text();if(!text||text.length<50)throw new Error('Empty response');
+    link.text=text.slice(0,5000);link.status='done';link.error=null;
+  }catch(e){link.status='error';link.error=e.name==='AbortError'?'Timed out.':'Could not fetch. Check the URL.';}
+  persist();render();
+}
+function autoFetchPendingLinks(){(S.kb.links||[]).filter(l=>l.status==='pending').forEach(l=>fetchLinkFn(l.id));}
+async function copyScript(idx){
+  try{await navigator.clipboard.writeText(cleanScript(S.results[idx]||''));S.copiedIdx=idx;render();setTimeout(()=>{S.copiedIdx=null;render();},2000);}catch(e){}
+}
+
+// ── RENDER + EVENTS ───────────────────────────────────────
+function render(){
+  const app=document.getElementById('app');if(!app)return;
+  app.innerHTML=currentKey()?renderMain():renderSetup();
+}
+document.addEventListener('DOMContentLoaded',function(){
+  const app=document.getElementById('app');
+  app.addEventListener('click',function(e){
+    const el=e.target.closest('[data-action]');
+    if(el){e.preventDefault();doAction(el.getAttribute('data-action'));}
+  });
+  render();
+  if(currentKey())autoFetchPendingLinks();
+});
+document.addEventListener('keydown',function(e){
+  if(!S.showTP)return;
+  if(e.key===' '||e.key==='Spacebar'){e.preventDefault();tpToggle();}
+  else if(e.key==='Escape'){tpClose();}
+  else if(e.key==='-'||e.key==='ArrowLeft'){tpSlower();}
+  else if(e.key==='+'||e.key==='ArrowRight'){tpFaster();}
+  else if(e.key==='r'||e.key==='R'){tpReset();}
+});
+</script></body></html>
