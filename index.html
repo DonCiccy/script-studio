@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <!--
-  Script Studio — MultiBase / Feliks
-  Apri nel browser. Richiede solo connessione internet per le chiamate API.
+  Script Studio
+  AI-powered video script generator. Open in browser, no installation needed.
 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Script Studio — MultiBase</title>
+<title>Script Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600..900&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -344,8 +344,8 @@ function durLabel(secs){
   return m+'min'+(s?String(s)+'s':'');
 }
 function durWords(secs){return Math.round(secs/60*150);}
-
-
+ 
+ 
 // ── STORAGE ──────────────────────────────────────────────
 const LS={
   get(k){try{return localStorage.getItem(k);}catch(e){return null;}},
@@ -355,13 +355,13 @@ const LS={
 const SK='feliks-v5', CK='feliks-conf';
 function persist(){LS.set(SK,JSON.stringify({kb:S.kb,ideas:S.ideas,hist:S.hist}));}
 function persistConf(){LS.set(CK,JSON.stringify({provider:S.provider,model:S.model,keys:S.keys}));}
-
+ 
 // ── CONSTANTS ────────────────────────────────────────────
 const LANGS=[{k:'it',l:'IT',f:'Italian'},{k:'en',l:'EN',f:'English'},{k:'de',l:'DE',f:'German'}];
 const DEFAULT_KB={
   about:'',
   brand:'',
-  proofPoints:[],pillars:[],styleExamples:[],documents:[]
+  proofPoints:[],pillars:[],styleExamples:[],documents:[],links:[]
 };
 const PL=[
   {key:'linkedin',label:'LinkedIn',
@@ -397,7 +397,7 @@ const PL=[
     {key:'keypoints',label:'Key points',  desc:'Map for a live unscripted interview',   guide:'5-8 key points: concept + example + bridge to next. Plus 2 anecdotes, the closing line.'},
   ]},
 ];
-
+ 
 // ── STATE ─────────────────────────────────────────────────
 const saved=LS.json(SK,{});
 const conf=LS.json(CK,{});
@@ -437,7 +437,7 @@ const S={
 function currentKey(){return S.keys[S.provider]||null;}
 function currentProv(){return PROVIDERS[S.provider];}
 function currentModelName(){const m=(currentProv()?.models||[]).find(x=>x.id===S.model);return m?m.name:S.model;}
-
+ 
 // ── HELPERS ───────────────────────────────────────────────
 function esc(s){return s==null?'':String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function uid(){return typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2);}
@@ -464,39 +464,39 @@ function buildSys(pl,obj,lang,nv){
   const vb=nv>1?'\n\nPRODUCE EXACTLY '+nv+' VARIANTS with different openings. Separate each with a line containing only "---". Label them VARIANT 1, VARIANT 2'+(nv===3?', VARIANT 3':'')+'.'  :'';
   const dur=S.duration||durDefault(obj.key);
   const durConstraint='\n\nDURATION: '+durLabel(dur)+' — approximately '+durWords(dur)+' words at normal speaking pace. Hard limit.';
-
+ 
   const what=`
 WHAT YOU ARE WRITING
 This is a word-for-word script that ${S.conf?.creator||'the creator'} will read while recording alone on camera.
 Every sentence will be spoken out loud. Nothing will appear on screen as text.
-
+ 
 WHAT THIS IS NOT — avoid at all costs:
 - Landing page copy or ad taglines ("Stop rebuilding. Start deciding.")
 - Alliterative slogans or billboard phrases
 - Third-person brand voice ("At [Brand], we...")
 - Headline stacks ("Faster. Smarter. Better.")
 - Any sentence that sounds better written than spoken
-
+ 
 WHAT GOOD LOOKS LIKE:
 A good script sounds like a specific person thinking through something real.
 Example of what TO write:
 "Last week a client called me frustrated. Six months into a project, same problems as before. The tools had changed. The root cause hadn't. That's the trap nobody talks about — and it's exactly what we solve."
-
+ 
 Example of what NOT to write:
 "This software eliminates the problem. At [Brand], we solve it. Stop wasting time."g. Start deciding."
-
+ 
 The first sounds like a real person talking. The second sounds like a landing page.
-
+ 
 VOICE RULES:
 - First person singular ("I", "we" when referring to the brand)
 - Contractions are mandatory: "that's", "it's", "you're", "don't"
 - Short sentences mixed with longer ones — spoken rhythm, not written prose
 - One concrete specific beats ten general claims
 - If there's a number, a client situation, or a real example in the knowledge base — use it`;
-
+ 
   return 'You write word-for-word scripts for a founder filming himself alone on camera. Your output is exactly what he will say — not what will appear on screen.\n\n'+kbToStr(S.kb)+durConstraint+what+structureInstruction(obj.key)+'\n\nPLATFORM — '+pl.label+'\n'+pl.tone+'\n\nOBJECTIVE — '+obj.label+'\n'+obj.guide+'\n\nLanguage: '+lf+'. Output only the labeled script sections. Nothing else.'+vb;
 }
-
+ 
 // ── SVG ICONS ─────────────────────────────────────────────
 const ICO={
   li:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4V9h4v1.5A6 6 0 0 1 22 14"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>`,
@@ -517,7 +517,7 @@ const ICO={
   hst:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>`,
   ldr:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.2-8.6"/></svg>`,
 };
-
+ 
 // ── API LAYER ─────────────────────────────────────────────
 function parseGemini(d){
   const parts=d?.candidates?.[0]?.content?.parts||[];
@@ -571,8 +571,8 @@ async function callAIPDF(b64,user){
   // openai: no native PDF support, skip
   throw new Error('PDF upload not supported for OpenAI — use paste text instead.');
 }
-
-
+ 
+ 
 // ── STRUCTURES ────────────────────────────────────────────
 // Per-objective section definitions: {k: label, d: instruction for model}
 const STRUCT = {
@@ -649,8 +649,8 @@ function structureInstruction(objKey){
   const list=secs.map(s=>'['+s.k+']\n('+s.d+')').join('\n\n');
   return '\n\nOUTPUT STRUCTURE — write the script using these exact labeled sections. Use the exact label in brackets on its own line, then the script content below it:\n\n'+list+'\n\nWrite real spoken script content under each label. Do not write the descriptions.';
 }
-
-
+ 
+ 
 // ── TELEPROMPTER ENGINE ───────────────────────────────────
 const TP={active:false,speed:3,raf:null,lastTime:null};
 // speed levels in px/second
@@ -693,7 +693,7 @@ function tpUpdateUI(){
   if(spd){const dots='●'.repeat(TP.speed)+'○'.repeat(5-TP.speed);spd.textContent=dots;}
   if(hint)hint.style.opacity=TP.active?'0':'1';
 }
-
+ 
 // ── HTML TEMPLATES ────────────────────────────────────────
 function cleanScript(text){
   // Strip [SECTION LABEL] lines and normalize whitespace
@@ -721,11 +721,11 @@ function updateSection(ri,sk,val){
   const updated=secs.map(s=>s.k===sk?{...s,text:val}:s);
   S.results[ri]=rebuildFromSections(updated);
 }
-
+ 
 function sh(label){return `<div class="sh"><span class="fm xs caps">${esc(label)}</span><div class="rule"></div></div>`;}
 function badge(text,v){return `<span class="badge b${v||'a'}">${esc(text)}</span>`;}
 function empty(title,sub){return `<div class="empty"><p class="sm dim mb1">${esc(title)}</p>${sub?`<p class="xs muted">${esc(sub)}</p>`:''}</div>`;}
-
+ 
 function renderSetup(){
   const{setupProvider:sp,setupStep:step,setupKey:key,setupErr:err}=S;
   const prov=PROVIDERS[sp];
@@ -785,7 +785,7 @@ function renderSetup(){
     <div class="flex items-c mb8">${dots}</div>${c}
   </div></div>`;
 }
-
+ 
 function renderSettings(){
   const{settingsTab:tab,settingsTmpKey:tmpKey,settingsErr:err}=S;
   const p=PROVIDERS[tab];
@@ -830,7 +830,7 @@ function renderSettings(){
     </div>
   </div>`;
 }
-
+ 
 function renderTP(){
   const text=cleanScript(S.results[S.tpIdx]||'');
   const words=text.split(/\s+/).filter(Boolean).length;
@@ -854,8 +854,8 @@ function renderTP(){
     </div>
   </div>`;
 }
-
-
+ 
+ 
 function renderMain(){
   const{tab}=S;
   const tabs=[{id:'studio',label:'Studio',ico:'grd'},{id:'kb',label:'Knowledge Base',ico:'db'},{id:'history',label:'History',ico:'hst'}];
@@ -880,7 +880,7 @@ function renderMain(){
     <nav class="nav">${nav}</nav>${body}
   </div></div>`;
 }
-
+ 
 function renderStudio(){
   const{selPl,selObj,topic,notes,lang,nv,showQA,qaText,genIdeas,genLoading,genErr,selIdx,generating,results,scriptErr,copiedIdx,savedHist,ideas}=S;
   const pl=plOf(selPl),obj=pl&&objOf(selPl,selObj);
@@ -966,7 +966,7 @@ function renderStudio(){
     </div>`:''}
   </div>`;
 }
-
+ 
 function renderKB(){
   const{kb,kbOk,nProof,pilT,pilD,docTitle,docText,docMode,docErr,extracting,newLink}=S;
   const proofItems=kb.proofPoints.map(p=>`<div class="kbi"><p class="sm kbi-label">${esc(p.text)}</p><button class="btn-del shrink0" data-action="delProof:${p.id}">${ICO.trs}</button></div>`).join('');
@@ -1056,7 +1056,7 @@ function renderKB(){
     </div>
   </div>`;
 }
-
+ 
 function renderHistory(){
   const{hist}=S;
   if(!hist.length) return empty('No scripts saved yet','Generate your first one in Studio and save it');
@@ -1078,7 +1078,7 @@ function renderHistory(){
     </details>`;
   }).join('')}</div>`;
 }
-
+ 
 // ── ACTIONS ───────────────────────────────────────────────
 function doAction(action){
   const[cmd,...rest]=action.split(':'); const arg=rest.join(':');
@@ -1157,7 +1157,7 @@ function doAction(action){
     case 'fetchLink':fetchLinkFn(arg);break;
   }
 }
-
+ 
 // ── API CALLS ─────────────────────────────────────────────
 async function genIdeasFn(){
   S.genLoading=true;S.genErr=null;S.genIdeas=[];S.selIdx=null;render();
@@ -1230,7 +1230,7 @@ function autoFetchPendingLinks(){(S.kb.links||[]).filter(l=>l.status==='pending'
 async function copyScript(idx){
   try{await navigator.clipboard.writeText(cleanScript(S.results[idx]||''));S.copiedIdx=idx;render();setTimeout(()=>{S.copiedIdx=null;render();},2000);}catch(e){}
 }
-
+ 
 // ── RENDER + EVENTS ───────────────────────────────────────
 function render(){
   const app=document.getElementById('app');if(!app)return;
