@@ -4,6 +4,8 @@
 
 Platform → objective → ideas → structured script → teleprompter. Two versions: a standalone HTML file that works anywhere, and a React artifact for Claude.ai.
 
+**[→ Live demo](https://donciccy.github.io/script-studio)**
+
 ---
 
 ## What it does
