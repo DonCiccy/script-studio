@@ -7,7 +7,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Script Studio</title>
+<title>Script Studio — AI video script generator</title>
+<meta name="description" content="Generate video scripts for LinkedIn, Meta Ads, and landing pages using AI, with a built-in teleprompter. Bring your own API key — Gemini, Claude, or OpenAI.">
+
+<meta property="og:title" content="Script Studio">
+<meta property="og:description" content="AI-powered video scripts for LinkedIn, Meta Ads, and landing pages — with a built-in teleprompter.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://donciccy.github.io/script-studio">
+<meta property="og:image" content="https://donciccy.github.io/script-studio/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="Script Studio — AI video script generator">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Script Studio">
+<meta name="twitter:description" content="AI-powered video scripts for LinkedIn, Meta Ads, and landing pages — with a built-in teleprompter.">
+<meta name="twitter:image" content="https://donciccy.github.io/script-studio/assets/og-image.png">
+
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="icon" type="image/png" sizes="180x180" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/favicon.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600..900&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -281,7 +302,11 @@ button:focus-visible,summary:focus-visible{outline:2px solid #f59e0b;outline-off
 .tp-hint{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'IBM Plex Mono',monospace;font-size:13px;color:#52525b;pointer-events:none;transition:opacity .3s;white-space:nowrap;text-align:center}
 .tp-info{position:fixed;top:16px;left:50%;transform:translateX(-50%);font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3f3f46;pointer-events:none}
 </style>
-</head><body><div id="app"></div><script>
+</head><body><div id="app"></div>
+<footer class="wrap sm" style="text-align:center;padding-top:0">
+  <p class="muted">Open source &middot; MIT License &middot; Built by <a href="https://github.com/DonCiccy" target="_blank" class="c-amber">Andrea Ciccia</a> &middot; <a href="https://github.com/DonCiccy/script-studio" target="_blank" class="c-amber">GitHub</a></p>
+</footer>
+<script>
 // ── PROVIDERS ────────────────────────────────────────────
 const PROVIDERS = {
   gemini:{
